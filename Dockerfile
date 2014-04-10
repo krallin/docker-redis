@@ -1,4 +1,4 @@
-FROM quay.io/aptible/ubuntu:12.10
+FROM quay.io/aptible/ubuntu:12.04
 
 # Install latest stable Redis from source
 RUN apt-get update

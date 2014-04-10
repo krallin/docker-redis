@@ -1,6 +1,8 @@
 # ![](https://gravatar.com/avatar/11d3bc4c3163e3d238d558d5c9d98efe?s=64) aptible/redis
 
-Redis, on top of Ubuntu 12.10.
+[![Docker Repository on Quay.io](https://quay.io/repository/aptible/redis/status)](https://quay.io/repository/aptible/redis)
+
+Redis on Docker
 
 ## Installation and Usage
 
@@ -13,7 +15,7 @@ Redis, on top of Ubuntu 12.10.
 
 ## Available Tags
 
-* `latest`: Currently Redis 2.8.7
+* `latest`: Currently Redis 2.8.8
 
 ## Tests
 
