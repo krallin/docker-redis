@@ -15,7 +15,7 @@ Redis on Docker
 
 ## Available Tags
 
-* `latest`: Currently Redis 2.8.8
+* `latest`: Currently Redis 2.8.9
 
 ## Tests
 
