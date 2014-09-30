@@ -2,7 +2,7 @@
 
 @test "It should install Redis " {
   run redis-server --version
-  [[ "$output" =~ "2.8.9"  ]]
+  [[ "$output" =~ "2.8.17"  ]]
 }
 
 @test "It should install Redis to /usr/local/bin/redis-server" {
