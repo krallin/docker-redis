@@ -18,4 +18,4 @@ EXPOSE 6379
 ADD test /tmp/test
 RUN bats /tmp/test
 
-CMD ["/usr/local/bin/redis-server /etc/redis.conf"]
+CMD /usr/local/bin/redis-server /etc/redis.conf
