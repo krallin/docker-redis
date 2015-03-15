@@ -1,21 +1,21 @@
-FROM quay.io/aptible/ubuntu:12.04
+FROM quay.io/aptible/alpine
 
-# Install latest stable Redis from source
-RUN apt-get update
-RUN apt-get -y install wget build-essential zlib1g-dev libssl-dev \
-      libreadline6-dev libyaml-dev && cd /tmp && \
-      wget -q http://download.redis.io/redis-stable.tar.gz && \
-      tar xvzf redis-stable.tar.gz && \
-      cd redis-stable && make install && mkdir -p /var/db/redis && \
-      cd .. && rm -rf redis-stable
+ENV DATA_DIRECTORY /var/db
 
+RUN apk-install redis=2.8.17-r0
 ADD templates/redis.conf /etc/redis.conf
-
-VOLUME ["/var/db/redis"]
-EXPOSE 6379
 
 # Integration tests
 ADD test /tmp/test
 RUN bats /tmp/test
 
-CMD /usr/local/bin/redis-server /etc/redis.conf
+VOLUME ["$DATA_DIRECTORY"]
+EXPOSE 6379
+
+ENV CONFIG_DIRECTORY /etc/redis
+VOLUME ["$CONFIG_DIRECTORY"]
+
+ADD run-database.sh /usr/bin/
+ENTRYPOINT ["run-database.sh"]
+
+EXPOSE 6379
