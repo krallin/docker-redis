@@ -18,7 +18,8 @@ The first command sets up a data container named `data` which will hold the conf
 
 ## Available Tags
 
-* `latest`: Currently Redis 2.8.17
+* `latest`: Currently Redis 2.8.21
+* `2.8.21`: Redis 2.8.21
 
 ## Tests
 
