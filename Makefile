@@ -1,6 +1,6 @@
 DOCKER = docker
 REPO = git@github.com:aptible/docker-redis.git
-TAGS = 2.8.21
+TAGS = 2.8
 
 all: release
 
