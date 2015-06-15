@@ -1,6 +1,7 @@
 # ![](https://gravatar.com/avatar/11d3bc4c3163e3d238d558d5c9d98efe?s=64) aptible/redis
-
 [![Docker Repository on Quay.io](https://quay.io/repository/aptible/redis/status)](https://quay.io/repository/aptible/redis)
+
+[![](http://dockeri.co/image/aptible/redis)](https://registry.hub.docker.com/u/aptible/redis/)
 
 Redis on Docker
 
@@ -18,13 +19,20 @@ The first command sets up a data container named `data` which will hold the conf
 
 ## Available Tags
 
-* `latest`: Currently Redis 2.8.17
+* `latest`: Currently Redis 2.8.21
+* `2.8`: Redis 2.8.21
 
 ## Tests
 
 Tests are run as part of the `Dockerfile` build. To execute them separately within a container, run:
 
     bats test
+
+## Continuous Integration
+
+Images are built and pushed to Docker Hub on every deploy. Because Quay currently only supports build triggers where the Docker tag name exactly matches a GitHub branch/tag name, we must run the following script to synchronize all our remote branches after a merge to master:
+
+    make sync-branches
 
 ## Deployment
 

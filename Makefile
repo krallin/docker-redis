@@ -1,21 +1,20 @@
 DOCKER = docker
-ENV = $(shell cat .dockeropts)
-REPO = quay.io/aptible/redis
-
-TAG = $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
-ifeq ($(TAG), master)
-	TAG = latest
-else ifeq ($(TAG), HEAD)
-	TAG = latest
-endif
+REPO = git@github.com:aptible/docker-redis.git
+TAGS = 2.8
 
 all: release
 
-run: build
-	$(DOCKER) run $(ENV) $(REPO)
+sync-branches:
+	git fetch $(REPO) master
+	@$(foreach tag, $(TAGS), git branch -f $(tag) FETCH_HEAD;)
+	@$(foreach tag, $(TAGS), git push $(REPO) $(tag);)
+	@$(foreach tag, $(TAGS), git branch -D $(tag);)
 
-release: test build
-	$(DOCKER) push $(REPO)
+release: $(TAGS)
+	$(DOCKER) push quay.io/aptible/redis
 
-build:
-	$(DOCKER) build -t $(REPO):$(TAG) .
+build: $(TAGS)
+
+.PHONY: $(TAGS)
+$(TAGS):
+	$(DOCKER) build -t quay.io/aptible/redis:$@ $@
