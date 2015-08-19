@@ -17,6 +17,14 @@ This is an image conforming to the [Aptible database specification](https://supp
 
 The first command sets up a data container named `data` which will hold the configuration and data for the database. The second command creates a Redis instance with the passphrase of your choice. The third command starts the database server.
 
+## Configuration
+
+In addition to the standard Aptible database ENV variables, which may be specified when invoking this image with `--initialize`, the following environment variables may be set at runtime (i.e., launching a container from the image without arguments):
+
+| Variable | Description |
+| -------- | ----------- |
+| `MAX_MEMORY` | Memory limit for Redis server (e.g., 100mb) |
+
 ## Available Tags
 
 * `latest`: Currently Redis 2.8.21
