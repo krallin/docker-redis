@@ -7,6 +7,10 @@ DUMP_FILENAME="/tmp/dump.rdb"
 start_server()
 {
   touch $ARGUMENT_FILE # don't crash and burn if initialize wasn't called.
+  if [ -n "$MAX_MEMORY" ]; then
+    echo "--maxmemory-policy allkeys-lru" >> "$ARGUMENT_FILE"
+    echo "--maxmemory ${MAX_MEMORY}" >> "$ARGUMENT_FILE"
+  fi
   redis-server /etc/redis.conf --dir "$DATA_DIRECTORY" $(cat "$ARGUMENT_FILE")
 }
 
