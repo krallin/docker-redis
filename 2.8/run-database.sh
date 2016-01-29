@@ -18,7 +18,7 @@ start_server() {
     echo "--maxmemory ${MAX_MEMORY}" >> "$ARGUMENT_FILE"
   fi
   # shellcheck disable=SC2046
-  redis-server /etc/redis.conf --dir "$DATA_DIRECTORY" $(cat "$ARGUMENT_FILE")
+  redis-server /etc/redis.conf --port "${PORT:-${DEFAULT_PORT}}" --dir "$DATA_DIRECTORY" $(cat "$ARGUMENT_FILE")
 }
 
 
