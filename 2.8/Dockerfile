@@ -7,7 +7,7 @@ ADD ./install-redis.sh /install-redis.sh
 RUN /install-redis.sh
 
 # rdbtools is used for importing an RDB dump remotely.
-RUN apk-install py-pip && pip install rdbtools
+RUN apk-install py-pip coreutils && pip install rdbtools
 ADD templates/redis.conf /etc/redis.conf
 
 ADD run-database.sh /usr/bin/
