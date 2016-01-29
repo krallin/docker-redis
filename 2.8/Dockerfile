@@ -10,19 +10,19 @@ RUN /install-redis.sh
 RUN apk-install py-pip && pip install rdbtools
 ADD templates/redis.conf /etc/redis.conf
 
+ADD run-database.sh /usr/bin/
+ADD utilities.sh /usr/bin/
+
+ENV DATA_DIRECTORY /var/db
+VOLUME ["$DATA_DIRECTORY"]
+
+ENV CONFIG_DIRECTORY /etc/redis
+VOLUME ["$CONFIG_DIRECTORY"]
+
 # Integration tests
 ADD test /tmp/test
 RUN bats /tmp/test
 
-ENV DATA_DIRECTORY /var/db
-
-VOLUME ["$DATA_DIRECTORY"]
 EXPOSE 6379
 
-ENV CONFIG_DIRECTORY /etc/redis
-VOLUME ["$CONFIG_DIRECTORY"]
-EXPOSE 6379
-
-ADD run-database.sh /usr/bin/
-ADD utilities.sh /usr/bin/
 ENTRYPOINT ["run-database.sh"]
