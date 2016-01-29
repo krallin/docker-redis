@@ -1,14 +1,20 @@
 FROM quay.io/aptible/alpine
 
-ENV DATA_DIRECTORY /var/db
+ENV REDIS_VERSION 2.8.24
+ENV REDIS_SHA1SUM 636efa8b522dfbf7f3dba372237492c11181f8e0
+
+ADD ./install-redis.sh /install-redis.sh
+RUN /install-redis.sh
 
 # rdbtools is used for importing an RDB dump remotely.
-RUN apk-install redis=2.8.21-r0 py-pip=1.5.6-r2 && pip install rdbtools
+RUN apk-install py-pip && pip install rdbtools
 ADD templates/redis.conf /etc/redis.conf
 
 # Integration tests
 ADD test /tmp/test
 RUN bats /tmp/test
+
+ENV DATA_DIRECTORY /var/db
 
 VOLUME ["$DATA_DIRECTORY"]
 EXPOSE 6379
