@@ -1,7 +1,7 @@
 FROM quay.io/aptible/alpine
 
-ENV REDIS_VERSION 2.8.24
-ENV REDIS_SHA1SUM 636efa8b522dfbf7f3dba372237492c11181f8e0
+ENV REDIS_VERSION <%= ENV.fetch 'REDIS_VERSION' %>
+ENV REDIS_SHA1SUM <%= ENV.fetch 'REDIS_SHA1SUM' %>
 
 ADD ./bin/install-redis.sh /install-redis.sh
 RUN /install-redis.sh
