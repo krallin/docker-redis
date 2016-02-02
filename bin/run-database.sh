@@ -32,7 +32,7 @@ elif [[ "$1" == "--initialize-from" ]]; then
 
   # shellcheck disable=SC2154
   {
-    echo "--requirepass \"$password\"" > "$ARGUMENT_FILE"
+    echo "--requirepass $password" > "$ARGUMENT_FILE"
     echo "--slaveof $host ${port:-${DEFAULT_PORT}}" >> "$ARGUMENT_FILE"
     echo "--masterauth $password" >> "$ARGUMENT_FILE"
   }
