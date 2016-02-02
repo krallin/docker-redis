@@ -25,12 +25,11 @@ start_server() {
 if [[ "$1" == "--initialize" ]]; then
   echo "--requirepass $PASSPHRASE" > "$ARGUMENT_FILE"
 
-elif [[ "$1" == "--activate-leader" ]]; then
+elif [[ "$1" == "--initialize-from" ]]; then
   [ -z "$2" ] && echo "docker run -i aptible/redis --initialize-from redis://..." && exit
-  echo "REDIS_REPLICATION_MASTER_URL=${2}"
 
-elif [[ "$1" == "--initialize-follower" ]]; then
-  parse_url "$REDIS_REPLICATION_MASTER_URL"
+  parse_url "$2"
+
   # shellcheck disable=SC2154
   {
     echo "--requirepass \"$password\"" > "$ARGUMENT_FILE"
