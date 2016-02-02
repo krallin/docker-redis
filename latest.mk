@@ -1,0 +1,2 @@
+LATEST_TAG = 2.8
+

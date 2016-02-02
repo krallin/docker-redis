@@ -1,7 +1,7 @@
 # ![](https://gravatar.com/avatar/11d3bc4c3163e3d238d558d5c9d98efe?s=64) aptible/redis
-[![Docker Repository on Quay.io](https://quay.io/repository/aptible/redis/status)](https://quay.io/repository/aptible/redis)
 
-[![](http://dockeri.co/image/aptible/redis)](https://registry.hub.docker.com/u/aptible/redis/)
+[![Docker Repository on Quay.io](https://quay.io/repository/aptible/redis/status)](https://quay.io/repository/aptible/redis)
+[![Build Status](https://travis-ci.org/aptible/docker-redis.svg?branch=master)](https://travis-ci.org/aptible/docker-redis)
 
 Redis on Docker
 
