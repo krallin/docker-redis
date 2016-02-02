@@ -69,9 +69,10 @@ echo "Adding test data"
 
 docker run -it --rm "$IMG" --client "$MASTER_URL" SET test_after TEST_DATA
 
-# Check the data now
 
-docker run -it --rm "$IMG" --client "$MASTER_URL" GET test_before | grep "TEST_DATA"
-docker run -it --rm "$IMG" --client "$MASTER_URL" GET test_after  | grep "TEST_DATA"
+echo "Checking test data"
+
+docker run -it --rm "$IMG" --client "$SLAVE_URL" GET test_before | grep "TEST_DATA"
+docker run -it --rm "$IMG" --client "$SLAVE_URL" GET test_after  | grep "TEST_DATA"
 
 echo "Test OK!"
