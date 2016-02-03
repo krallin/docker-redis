@@ -1,6 +1,8 @@
 #!/bin/bash
 set -o errexit
 
+
+# shellcheck disable=SC1091
 . /usr/bin/utilities.sh
 
 
