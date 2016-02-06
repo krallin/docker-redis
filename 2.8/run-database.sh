@@ -20,7 +20,9 @@ if [[ "$1" == "--initialize" ]]; then
 elif [[ "$1" == "--client" ]]; then
   [ -z "$2" ] && echo "docker run -it aptible/redis --client redis://..." && exit
   parse_url "$2"
-  redis-cli -h "$host" -p "${port:-6379}" -a "$password"
+  shift
+  shift
+  redis-cli -h "$host" -p "${port:-6379}" -a "$password" "$@"
 
 elif [[ "$1" == "--dump" ]]; then
   [ -z "$2" ] && echo "docker run -i aptible/redis --dump redis://... > dump.rdb" && exit
