@@ -48,13 +48,19 @@ elif [[ "$1" == "--dump" ]]; then
   [ -z "$2" ] && echo "docker run -i aptible/redis --dump redis://... > dump.rdb" && exit
   parse_url "$2"
   redis-cli -h "$host" -p "${port:-${DEFAULT_PORT}}" -a "$password" --rdb "$DUMP_FILENAME"
-  cat "$DUMP_FILENAME"
+  #shellcheck disable=SC2015
+  [ -e /dump-output ] && exec 3>/dump-output || exec 3>&1
+  cat "$DUMP_FILENAME" >&3
+  rm "$DUMP_FILENAME"
 
 elif [[ "$1" == "--restore" ]]; then
   [ -z "$2" ] && echo "docker run -i aptible/redis --restore redis://... < dump.rdb" && exit
   parse_url "$2"
-  cat > "$DUMP_FILENAME"
+  #shellcheck disable=SC2015
+  [ -e /restore-input ] && exec 3</restore-input || exec 3<&0
+  cat > "$DUMP_FILENAME" <&3
   rdb --command protocol "$DUMP_FILENAME" | redis-cli -h "$host" -p "${port:-${DEFAULT_PORT}}" -a "$password" --pipe
+  rm "$DUMP_FILENAME"
 
 elif [[ "$1" == "--readonly" ]]; then
   echo "This image does not support read-only mode. Starting database normally."
