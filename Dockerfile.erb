@@ -20,6 +20,7 @@ ENV CONFIG_DIRECTORY /etc/redis
 VOLUME ["$CONFIG_DIRECTORY"]
 
 # Integration tests
+ADD <%= ENV.fetch 'TAG' %>/test /tmp/test
 ADD test /tmp/test
 RUN bats /tmp/test
 
