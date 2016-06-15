@@ -6,7 +6,7 @@ set -o pipefail
 REDIS_NAME="redis-${REDIS_VERSION}"
 REDIS_ARCHIVE="${REDIS_NAME}.tar.gz"
 REDIS_URL="http://download.redis.io/releases/${REDIS_ARCHIVE}"
-REDIS_BUILD_DEPS=(alpine-sdk linux-headers)
+REDIS_BUILD_DEPS=(build-base linux-headers wget ca-certificates)
 
 apk-install "${REDIS_BUILD_DEPS[@]}"
 
@@ -16,7 +16,7 @@ pushd "${redis_build_dir}"
 
 wget "${REDIS_URL}"
 echo "${REDIS_SHA1SUM}  ${REDIS_ARCHIVE}" | sha1sum -c -
-tar -xf "${REDIS_ARCHIVE}"
+tar -xzf "${REDIS_ARCHIVE}"
 pushd "${REDIS_NAME}"
 
 # Get the Alpine Linux no backtrace patch. Backtrace isn't available in Muslc,
