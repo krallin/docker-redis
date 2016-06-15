@@ -21,10 +21,12 @@ pushd "${REDIS_NAME}"
 
 # Get the Alpine Linux no backtrace patch. Backtrace isn't available in Muslc,
 # but Redis 2.8.x doesn't check for Glibc before enabling it.
-NO_BACKTRACE_PATCH="redis-no-backtrace.patch"
-wget "https://raw.githubusercontent.com/alpinelinux/aports/115f0915bb5bb7c9c36b43c7fbfe0dd11435580c/main/redis/${NO_BACKTRACE_PATCH}"
-
-patch -p1 -i "./${NO_BACKTRACE_PATCH}"
+if [[ "$REDIS_VERSION" =~ ^2.8.[0-9]+$ ]]; then
+  NO_BACKTRACE_REF="115f0915bb5bb7c9c36b43c7fbfe0dd11435580c"
+  NO_BACKTRACE_PATCH="redis-no-backtrace.patch"
+  wget "https://raw.githubusercontent.com/alpinelinux/aports/${NO_BACKTRACE_REF}/main/redis/${NO_BACKTRACE_PATCH}"
+  patch -p1 -i "./${NO_BACKTRACE_PATCH}"
+fi
 
 make all PREFIX=/usr/local MALLOC=libc
 make install
