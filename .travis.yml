@@ -7,7 +7,9 @@ services:
 env:
   matrix:
     - TAG=2.8
+    - TAG=2.8-ssl
     - TAG=3.0
+    - TAG=3.0-ssl
 
 script:
   - make build

@@ -3,6 +3,6 @@
   [[ "$output" =~ "3.0.7"  ]]
 }
 
-@test "It should run with REDIS_SSL unset" {
-  [[ -z "$REDIS_SSL" ]]
+@test "It should run with REDIS_SSL set" {
+  [[ -n "$REDIS_SSL" ]]
 }

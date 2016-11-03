@@ -1,0 +1,20 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+
+STUNNEL_CONFIGURATION="${STUNNEL_DIRECTORY}/stunnel.conf"
+
+cat > "$STUNNEL_CONFIGURATION" <<EOF
+foreground = yes
+output = /dev/stdout
+pid =
+
+options = NO_SSLv2
+options = NO_SSLv3
+
+debug = 4
+
+include = ${STUNNEL_DIRECTORY}/tunnels
+EOF
+
+exec stunnel "$STUNNEL_CONFIGURATION"

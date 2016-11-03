@@ -1,29 +1,59 @@
-FROM quay.io/aptible/alpine
+FROM quay.io/aptible/alpine:3.4
 
 ENV REDIS_VERSION <%= ENV.fetch 'REDIS_VERSION' %>
 ENV REDIS_SHA1SUM <%= ENV.fetch 'REDIS_SHA1SUM' %>
 
-ADD ./bin/install-redis.sh /install-redis.sh
+ENV REDIS_USER redis
+RUN addgroup "$REDIS_USER"
+RUN adduser -S "$REDIS_USER" -G "$REDIS_USER"
+
+RUN apk-install supervisor ca-certificates
+
+ADD bin/install-stunnel.sh /install-stunnel.sh
+RUN /install-stunnel.sh
+
+ADD bin/install-redis.sh /install-redis.sh
 RUN /install-redis.sh
+
+# openssl is used to generate new certs if none are provided
+# pwgen is used to generate password
+RUN apk-install openssl pwgen
 
 # rdbtools is used for importing an RDB dump remotely.
 RUN apk-install py-pip coreutils && pip install rdbtools
+
 ADD templates/redis.conf /etc/redis.conf
+ADD templates/supervisord.conf /etc/supervisord.conf
 
-ADD ./bin/run-database.sh /usr/bin/
-ADD ./bin/utilities.sh /usr/bin/
+ADD bin/pick-free-port /usr/bin/
+ADD bin/exit-event-listener /usr/bin/
+ADD bin/redis-wrapper /usr/bin/
+ADD bin/stunnel-wrapper /usr/bin/
 
-ENV DATA_DIRECTORY /var/db
+ADD bin/run-database.sh /usr/bin/
+ADD bin/utilities.sh /usr/bin/
+
+# Default ENV
+ENV REDIS_SSL=<%= ENV.fetch 'REDIS_SSL', '' %>
+ENV DATA_DIRECTORY=/var/db CONFIG_DIRECTORY=/etc/redis STUNNEL_ROOT_DIRECTORY=/etc/stunnel
+ENV SSL_CERTS_DIRECTORY=/etc/ssl/certs
+ENV REDIS_PORT=6379 REDIS_PROTOCOL=redis
+ENV SSL_PORT=6380 SSL_PROTOCOL=rediss
+
+ENV CA_CERTS=/etc/ssl
+
+# Volumes: Aptible will automatically mount these on an EBS device
 VOLUME ["$DATA_DIRECTORY"]
-
-ENV CONFIG_DIRECTORY /etc/redis
 VOLUME ["$CONFIG_DIRECTORY"]
+
+# Create default directories
+RUN mkdir -p "$DATA_DIRECTORY" "$CONFIG_DIRECTORY" "$STUNNEL_ROOT_DIRECTORY"
 
 # Integration tests
 ADD <%= ENV.fetch 'TAG' %>/test /tmp/test
 ADD test /tmp/test
-RUN bats /tmp/test
 
 EXPOSE 6379
+EXPOSE 6380
 
 ENTRYPOINT ["run-database.sh"]
