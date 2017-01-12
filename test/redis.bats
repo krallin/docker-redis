@@ -159,15 +159,16 @@ export_exposed_ports() {
     run-database.sh --connection-url > "${TEST_BASE_DIRECTORY}/url"
 
   pushd "${TEST_BASE_DIRECTORY}"
-  URL="$(python -c "import sys, json; print json.load(open('url'))['url']")"
+  URL="$(python -c "import sys, json; print json.load(open('url'))['credentials'][0]['connection_url']")"
   popd
 
-  EXPECTED_URL="$REDIS_DATABASE_URL_FULL"
-  if [[ -n "${REDIS_SSL:=}" ]]; then
-    EXPECTED_URL="$SSL_DATABASE_URL_FULL"
-  fi
+  [[ "$REDIS_DATABASE_URL_FULL" = "$URL" ]]
+  run-database.sh --client "$URL" INFO
 
-  [[ "$EXPECTED_URL" = "$URL" ]]
+  pushd "${TEST_BASE_DIRECTORY}"
+  URL="$(python -c "import sys, json; print json.load(open('url'))['credentials'][1]['connection_url']")"
+  popd
 
+  [[ "$SSL_DATABASE_URL_FULL" = "$URL" ]]
   run-database.sh --client "$URL" INFO
 }

@@ -34,7 +34,6 @@ ADD bin/run-database.sh /usr/bin/
 ADD bin/utilities.sh /usr/bin/
 
 # Default ENV
-ENV REDIS_SSL=<%= ENV.fetch 'REDIS_SSL', '' %>
 ENV DATA_DIRECTORY=/var/db CONFIG_DIRECTORY=/etc/redis STUNNEL_ROOT_DIRECTORY=/etc/stunnel
 ENV SSL_CERTS_DIRECTORY=/etc/ssl/certs
 ENV REDIS_PORT=6379 REDIS_PROTOCOL=redis

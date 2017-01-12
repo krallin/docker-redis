@@ -2,7 +2,3 @@
   run redis-server --version
   [[ "$output" =~ "3.0.7"  ]]
 }
-
-@test "It should run with REDIS_SSL unset" {
-  [[ -z "$REDIS_SSL" ]]
-}

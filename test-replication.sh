@@ -80,9 +80,19 @@ docker run -it --rm "${OPTS[@]}" "$IMG" --client "$MASTER_URL" SET test_before T
 
 echo "Initializing slave"
 
+# When we initialize via SSL, we'll twist things up a bit by providing broken
+# non-SSL URLs in the mix and making sure our Redis image prefers to use the
+# (functional) SSL URL.
+
+if [[ "$PROTOCOL" == "rediss" ]]; then
+  INITIALIZE_FROM_ARGS=("redis://foo" "$MASTER_URL" "redis://bar")
+else
+  INITIALIZE_FROM_ARGS=("$MASTER_URL")
+fi
+
 docker run -it --rm \
   --volumes-from "$SLAVE_DATA_CONTAINER" \
-  "${OPTS[@]}" "$IMG" --initialize-from "$MASTER_URL"
+  "${OPTS[@]}" "$IMG" --initialize-from "${INITIALIZE_FROM_ARGS[@]}"
 
 SLAVE_PORT=63792
 docker run -d --name "$SLAVE_CONTAINER" \

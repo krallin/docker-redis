@@ -13,16 +13,6 @@ DUMP_FILENAME="/tmp/dump.rdb"
 MASTER_FORWARD_PORT=8765
 MASTER_FORWARD_CONF="${DATA_DIRECTORY}/master-tunnel.conf"
 
-# Depending on the image flavor (whether REDIS_SSL is set), we'll expose a
-# different default port.
-EXPOSED_PORT="$REDIS_PORT"
-EXPOSED_PROTOCOL="$REDIS_PROTOCOL"
-
-if [[ -n "${REDIS_SSL:=}" ]]; then
-  EXPOSED_PORT="$SSL_PORT"
-  EXPOSED_PROTOCOL="$SSL_PROTOCOL"
-fi
-
 ensure_ssl_material() {
   if [ -n "${SSL_CERTIFICATE:-}" ] && [ -n "${SSL_KEY:-}" ]; then
     # Nothing to do!
@@ -170,9 +160,16 @@ elif [[ "$1" == "--initialize" ]]; then
   echo "--requirepass $PASSPHRASE" > "$ARGUMENT_FILE"
 
 elif [[ "$1" == "--initialize-from" ]]; then
-  [ -z "$2" ] && echo "docker run -i aptible/redis --initialize-from redis://..." && exit
+  [ -z "$2" ] && echo "docker run -i aptible/redis --initialize-from redis://... rediss://..." && exit
+  shift
 
-  parse_url "$2"
+  # Always prefer connecting over SSL if that URL was provided.
+  for url in "$@"; do
+    parse_url "$url"
+    if [[ "$protocol" = "rediss://" ]]; then
+      break
+    fi
+  done
 
   if [[ "$protocol" = "redis://" ]]; then
     if [[ -z "$port" ]]; then
@@ -227,21 +224,32 @@ elif [[ "$1" == "--readonly" ]]; then
 elif [[ "$1" == "--discover" ]]; then
   cat <<EOM
 {
-  "exposed_ports": [
-    ${EXPOSED_PORT}
-  ],
-  "suggested_configuration": {
+  "version": "1.0",
+  "environment": {
     "PASSPHRASE": "$(pwgen -s 32)"
   }
 }
 EOM
 
 elif [[ "$1" == "--connection-url" ]]; then
-  EXPOSE_PORT_PTR="EXPOSE_PORT_${EXPOSED_PORT}"
+  REDIS_EXPOSE_PORT_PTR="EXPOSE_PORT_${REDIS_PORT}"
+  SSL_EXPOSE_PORT_PTR="EXPOSE_PORT_${SSL_PORT}"
 
   cat <<EOM
 {
-  "url": "${EXPOSED_PROTOCOL}://:${PASSPHRASE}@${EXPOSE_HOST}:${!EXPOSE_PORT_PTR}"
+  "version": "1.0",
+  "credentials": [
+    {
+      "type": "redis",
+      "default": true,
+      "connection_url": "${REDIS_PROTOCOL}://:${PASSPHRASE}@${EXPOSE_HOST}:${!REDIS_EXPOSE_PORT_PTR}"
+    },
+    {
+      "type": "redis+ssl",
+      "default": false,
+      "connection_url": "${SSL_PROTOCOL}://:${PASSPHRASE}@${EXPOSE_HOST}:${!SSL_EXPOSE_PORT_PTR}"
+    }
+  ]
 }
 EOM
 
