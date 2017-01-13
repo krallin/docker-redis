@@ -2,12 +2,12 @@
 set -o errexit
 set -o nounset
 
-STUNNEL_VERSION="5.36"
-STUNNEL_SHA1SUM="60f7c761214f1959f7d52f0164f77d8d2a9328e6"
+STUNNEL_VERSION="5.37"
+STUNNEL_SHA1SUM="9ec0c64838b3013b38e2cac8e4500219a027831c"
 
 STUNNEL_NAME="stunnel-${STUNNEL_VERSION}"
 STUNNEL_ARCHIVE="${STUNNEL_NAME}.tar.gz"
-STUNNEL_URL="https://www.stunnel.org/downloads/${STUNNEL_ARCHIVE}"
+STUNNEL_URL="https://s3.amazonaws.com/aptible-source-archives/${STUNNEL_ARCHIVE}"
 
 STUNNEL_BUILD_DEPS=(build-base linux-headers wget openssl-dev)
 
