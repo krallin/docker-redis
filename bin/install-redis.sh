@@ -6,7 +6,7 @@ set -o pipefail
 REDIS_NAME="redis-${REDIS_VERSION}"
 REDIS_ARCHIVE="${REDIS_NAME}.tar.gz"
 REDIS_URL="http://download.redis.io/releases/${REDIS_ARCHIVE}"
-REDIS_BUILD_DEPS=(build-base linux-headers wget ca-certificates)
+REDIS_BUILD_DEPS=(build-base linux-headers wget)
 
 apk-install "${REDIS_BUILD_DEPS[@]}"
 

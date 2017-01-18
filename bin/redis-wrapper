@@ -1,0 +1,10 @@
+#!/bin/bash
+set -o nounset
+set -o errexit
+
+# shellcheck disable=SC2046
+exec redis-server \
+  /etc/redis.conf \
+  --port "$REDIS_PORT" \
+  --dir "$DATA_DIRECTORY" \
+  $(cat "$ARGUMENT_FILE")
