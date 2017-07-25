@@ -62,6 +62,9 @@ stop_redis () {
   while [ -n "$PID" ] && [ -e /proc/$PID ]; do sleep 0.1; done
 }
 
+local_s_client() {
+  echo OK | openssl s_client -connect localhost:"$@"
+}
 
 @test "It should install Redis to /usr/local/bin/redis-server" {
   test -x /usr/local/bin/redis-server
@@ -171,4 +174,28 @@ export_exposed_ports() {
 
   [[ "$SSL_DATABASE_URL_FULL" = "$URL" ]]
   run-database.sh --client "$URL" INFO
+}
+
+@test "stunnel allows TLS1.2" {
+  start_redis
+  run local_s_client "$SSL_PORT" -tls1_2
+  [ "$status" -eq 0 ]
+}
+
+@test "stunnel allows TLS1.1" {
+  start_redis
+  run local_s_client "$SSL_PORT" -tls1_1
+  [ "$status" -eq 0 ]
+}
+
+@test "stunnel allows TLS1.0" {
+  start_redis
+  run local_s_client "$SSL_PORT" -tls1
+  [ "$status" -eq 0 ]
+}
+
+@test "stunnel disallows SSLv3" {
+  start_redis
+  run local_s_client "$SSL_PORT" -ssl3
+  [ "$status" -ne 0 ]
 }
