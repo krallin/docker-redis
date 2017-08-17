@@ -122,7 +122,7 @@ echo "Creating empty clone"
 
 docker run -it --rm \
   -e PASSPHRASE="${PASSPHRASE}" \
-  --volumes-from "$MASTER_DATA_CONTAINER" \
+  --volumes-from "$CLONE_DATA_CONTAINER" \
   "${OPTS[@]}" "$IMG" --initialize
 
 CLONE_PORT=63793
