@@ -109,8 +109,9 @@ echo "Adding test data"
 
 docker run -it --rm "${OPTS[@]}" "$IMG" --client "$MASTER_URL" SET test_after TEST_DATA
 
-
 echo "Checking test data"
+
+sleep 1 # Give the test data a moment to show up. We might want to replace this with a busy poll.
 
 docker run -it --rm "${OPTS[@]}" "$IMG" --client "$SLAVE_URL" GET test_before | grep "TEST_DATA"
 docker run -it --rm "${OPTS[@]}" "$IMG" --client "$SLAVE_URL" GET test_after  | grep "TEST_DATA"
