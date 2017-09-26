@@ -52,7 +52,7 @@ teardown() {
 start_redis () {
   PASSPHRASE="$DATABASE_PASSWORD" run-database.sh --initialize
   run-database.sh > "$BATS_TEST_DIRNAME/redis.log" &
-  timeout 4 sh -c "while  ! grep 'ready to accept connections' '$BATS_TEST_DIRNAME/redis.log' ; do sleep 0.1; done"
+  timeout 4 sh -c "while  ! grep 'accept connections' '$BATS_TEST_DIRNAME/redis.log' ; do sleep 0.1; done"
 }
 
 
